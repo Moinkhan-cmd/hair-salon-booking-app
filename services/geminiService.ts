@@ -1,11 +1,31 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Chat } from "@google/genai";
 import { Appointment, Service, User } from '../types';
-import { MOCK_SERVICES } from '../constants';
+import { MOCK_SERVICES, MOCK_BARBERS } from '../constants';
 
-const API_KEY = process.env.API_KEY || ''; 
+// Safely access process.env
+const API_KEY = (typeof process !== 'undefined' && process.env && process.env.API_KEY) || '';
 
 // Helper to determine if we can use AI
 const hasKey = !!API_KEY;
+
+export const createChatSession = (): Chat | null => {
+  if (!hasKey) return null;
+  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const servicesText = MOCK_SERVICES.map(s => `${s.name} (₹${s.price})`).join(', ');
+  const barbersText = MOCK_BARBERS.map(b => b.name).join(', ');
+  
+  return ai.chats.create({
+    model: 'gemini-3-pro-preview',
+    config: {
+      systemInstruction: `You are the official AI assistant for Padla Hair Salon. 
+      We offer these services: ${servicesText}. 
+      Our top stylists are: ${barbersText}.
+      We are open 10 AM to 8 PM.
+      Help users with booking advice, service details, and general questions. 
+      Keep answers short, friendly, and helpful.`,
+    }
+  });
+};
 
 export const getSmartRecommendation = async (
   user: User, 

@@ -1,4 +1,4 @@
-import { Barber, Service, TimeSlot } from './types';
+import { Barber, Service, TimeSlot, Appointment } from './types';
 
 export const APP_NAME = "Padla Hair Salon";
 
@@ -102,6 +102,20 @@ export const GENERATE_TIME_SLOTS = (): TimeSlot[] => {
     slots.push({ time: `${i}:30`, available: true });
   }
   return slots;
+};
+
+export const checkBarberAvailability = (
+  barberId: string, 
+  date: string, 
+  timeSlot: string, 
+  appointments: Appointment[]
+): boolean => {
+  return !appointments.some(apt => 
+    apt.barberId === barberId && 
+    apt.date === date && 
+    apt.timeSlot === timeSlot && 
+    (apt.status === 'CONFIRMED' || apt.status === 'PENDING')
+  );
 };
 
 export const TRANSLATIONS = {
