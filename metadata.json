@@ -1,0 +1,7 @@
+{
+  "name": "Padla Hair Salon",
+  "description": "A premium, smart appointment booking platform for Padla Hair Salon featuring AI recommendations, OTP authentication, and a robust admin dashboard.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
